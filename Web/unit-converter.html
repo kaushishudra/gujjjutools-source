@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>GujjuTools — Free Online Tools</title>
+   <link rel="icon" type="image/png" href="img/Comp_logo.png"> 
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #eef2f7, #e6ebf3);
+        }
+
+        /* container */
+        .converter {
+            max-width: 420px;
+            margin: 100px auto;
+            background: rgba(255, 255, 255, .8);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .15);
+        }
+
+        .converter h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* fields */
+        .field {
+            margin: 15px 0;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src="navbar.js"></script>
+
+    <div class="converter">
+        <h2>Unit Converter</h2>
+
+        <div class="field">
+            <select id="category" onchange="updateUnits()">
+                <option value="length">Length</option>
+                <option value="weight">Weight</option>
+                <option value="temp">Temperature</option>
+                <option value="speed">Speed</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <input type="number" id="inputValue" placeholder="Enter value" oninput="convert()">
+        </div>
+
+        <div class="field">
+            <select id="fromUnit" onchange="convert()"></select>
+        </div>
+
+        <div class="field">
+            <select id="toUnit" onchange="convert()"></select>
+        </div>
+
+        <div class="result" id="result">Result: —</div>
+    </div>
+
+    <script src="footer.js"></script>
+
+    <script>
+        const units = {
+            length: { meter: 1, kilometer: 1000, centimeter: 0.01, millimeter: 0.001, mile: 1609.34, foot: 0.3048 },
+            weight: { gram: 1, kilogram: 1000, pound: 453.592, ounce: 28.3495 },
+            speed: { mps: 1, kph: 0.277778, mph: 0.44704 },
+            temp: { c: 1, f: 1, k: 1 }
+        };
+
+        function updateUnits() {
+            const cat = document.getElementById("category").value;
+            const from = document.getElementById("fromUnit");
+            const to = document.getElementById("toUnit");
+
+            from.innerHTML = "";
+            to.innerHTML = "";
+
+            Object.keys(units[cat]).forEach(u => {
+                from.innerHTML += `<option value="${u}">${u}</option>`;
+                to.innerHTML += `<option value="${u}">${u}</option>`;
+            });
+
+            convert();
+        }
+
+        function convert() {
+            const cat = document.getElementById("category").value;
+            const val = parseFloat(document.getElementById("inputValue").value);
+            const from = document.getElementById("fromUnit").value;
+            const to = document.getElementById("toUnit").value;
+
+            if (isNaN(val)) {
+                document.getElementById("result").innerText = "Result: —";
+                return;
+            }
+
+            if (cat === "temp") {
+                let c;
+                if (from === "c") c = val;
+                if (from === "f") c = (val - 32) * 5 / 9;
+                if (from === "k") c = val - 273.15;
+
+                let out;
+                if (to === "c") out = c;
+                if (to === "f") out = (c * 9 / 5) + 32;
+                if (to === "k") out = c + 273.15;
+
+                document.getElementById("result").innerText = `Result: ${out.toFixed(4)} ${to}`;
+                return;
+            }
+
+            const base = val * units[cat][from];
+            const result = base / units[cat][to];
+
+            document.getElementById("result").innerText = `Result: ${result.toFixed(4)} ${to}`;
+        }
+
+        updateUnits();
+        
+    </script>
+<div id="loader">
+    <div class="spinner"></div>
+    <p>Processing your file...</p>
+</div>
+
+
+</body>
+
+</html>

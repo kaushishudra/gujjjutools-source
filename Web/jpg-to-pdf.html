@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>GujjuTools — Free Online Tools</title>
+    <link rel="icon" type="image/png" href="img/Comp_logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JPG to PDF - GujjuTools</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<script src="navbar.js"></script>
+
+<div class="tool-wrapper">
+
+<h1 class="tool-title">JPG to PDF</h1>
+<p class="tool-desc">Convert images into a single PDF file</p>
+
+<div class="upload-box" id="dropArea">
+    <div class="upload-icon">🖼</div>
+    <p><b>Upload images here</b></p>
+    <input type="file" id="files" multiple hidden>
+</div>
+
+<div class="file-list" id="fileList"></div>
+
+<button class="action-btn" onclick="jpgToPdf()">Convert to PDF</button>
+
+</div>
+
+<script src="script.js?v=2"></script>
+<script src="footer.js"></script>
+<script src="transition.js"></script>
+
+<<script>
+const dropArea=document.getElementById("dropArea");
+const fileInput=document.getElementById("files");
+const fileList=document.getElementById("fileList");
+
+/* click upload */
+dropArea.onclick=()=>fileInput.click();
+
+/* manual select */
+fileInput.addEventListener("change",showFiles);
+
+/* drag over */
+dropArea.addEventListener("dragover",e=>{
+    e.preventDefault();
+    dropArea.classList.add("drag");
+});
+
+/* drag leave */
+dropArea.addEventListener("dragleave",()=>dropArea.classList.remove("drag"));
+
+/* drop files */
+dropArea.addEventListener("drop",e=>{
+    e.preventDefault();
+    dropArea.classList.remove("drag");
+
+    const dt = new DataTransfer();
+    [...e.dataTransfer.files].forEach(file => dt.items.add(file));
+
+    fileInput.files = dt.files;   // <-- THIS is the key fix
+    showFiles();
+});
+
+function showFiles(){
+    fileList.innerHTML="";
+    [...fileInput.files].forEach(f=>{
+        fileList.innerHTML+=`<div>📎 ${f.name}</div>`;
+    });
+}
+</script>
+<div id="loader">
+    <div class="spinner"></div>
+    <p>Processing your file...</p>
+</div>
+
+
+
+</body>
+</html>
+
+
+</html>

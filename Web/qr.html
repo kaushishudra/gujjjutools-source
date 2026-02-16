@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QR File Share - GujjuTools</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+<style>
+/* progress bar */
+#progressWrap{
+    width:100%;
+    max-width:420px;
+    margin:20px auto;
+    background:#eee;
+    border-radius:10px;
+    overflow:hidden;
+    height:14px;
+    display:none;
+}
+
+#progressBar{
+    width:0%;
+    height:100%;
+    background:#e5322d;
+    transition:width .2s;
+}
+
+/* link box */
+#linkBox{
+    display:none;
+    margin-top:25px;
+    text-align:center;
+}
+
+#downloadLink{
+    width:70%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+#copyBtn{
+    padding:10px 14px;
+    margin-left:10px;
+    border:none;
+    background:#e5322d;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<script src="navbar.js"></script>
+
+<div class="tool-wrapper">
+
+<h1 class="tool-title">QR File Share</h1>
+<p class="tool-desc">Upload file and share via QR code</p>
+
+<div class="upload-box" onclick="document.getElementById('file').click()">
+📂 Click to upload file
+<input type="file" id="file" hidden>
+</div>
+
+<!-- progress -->
+<div id="progressWrap">
+    <div id="progressBar"></div>
+</div>
+
+<!-- download link -->
+<div id="linkBox">
+    <input id="downloadLink" readonly>
+    <button id="copyBtn" onclick="copyLink()">Copy</button>
+</div>
+
+<!-- QR -->
+<div id="qrArea" style="margin-top:30px;text-align:center"></div>
+
+</div>
+
+<script>
+const API="http://127.0.0.1:8000"; // change to your LAN IP when sharing
+const MAX_SIZE=25*1024*1024; // 25MB
+
+document.getElementById("file").onchange=uploadFile;
+
+function uploadFile(){
+    const f=this.files[0];
+    if(!f) return;
+
+    // size limit
+    if(f.size>MAX_SIZE){
+        alert("File too large (max 25MB)");
+        return;
+    }
+
+    const form=new FormData();
+    form.append("file",f);
+
+    const xhr=new XMLHttpRequest();
+    xhr.open("POST",API+"/upload");
+
+    document.getElementById("progressWrap").style.display="block";
+    document.getElementById("progressBar").style.width="0%";
+
+    // upload progress
+    xhr.upload.onprogress=e=>{
+        if(e.lengthComputable){
+            const percent=Math.round((e.loaded/e.total)*100);
+            document.getElementById("progressBar").style.width=percent+"%";
+        }
+    };
+
+    // after upload
+    xhr.onload=()=>{
+        const data=JSON.parse(xhr.responseText);
+
+        // show link
+        document.getElementById("linkBox").style.display="block";
+        document.getElementById("downloadLink").value=data.url;
+
+        // generate QR
+        document.getElementById("qrArea").innerHTML="";
+        QRCode.toCanvas(data.url,{width:260},(err,canvas)=>{
+            document.getElementById("qrArea").appendChild(canvas);
+        });
+    };
+
+    xhr.send(form);
+}
+
+function copyLink(){
+    const link=document.getElementById("downloadLink");
+    link.select();
+    document.execCommand("copy");
+    alert("Link copied!");
+}
+</script>
+
+<script src="footer.js"></script>
+<script src="transition.js"></script>
+
+</body>
+</html>

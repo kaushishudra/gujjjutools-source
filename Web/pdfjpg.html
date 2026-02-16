@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to JPG - GujjuTools</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="img/Comp_logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+
+    <script src="navbar.js"></script>
+
+    <div class="tool-wrapper">
+
+        <h1 class="tool-title">PDF to JPG</h1>
+        <p class="tool-desc">Convert PDF pages into images</p>
+
+        <div class="upload-box" id="dropArea">
+            <div class="upload-icon">🖼</div>
+            <p><b>Click or drag PDF here</b></p>
+            <input type="file" id="files" hidden>
+        </div>
+
+        <div class="file-list" id="fileList"></div>
+
+       <button type="button" class="action-btn" onclick="pdfToJpg()">Convert to JPG</button>
+
+
+    </div>
+
+    <script src="script.js?v=2"></script>
+    <script src="footer.js"></script>
+    <script src="transition.js"></script>
+
+    <script>
+        const dropArea = document.getElementById("dropArea");
+        const fileInput = document.getElementById("files");
+        const fileList = document.getElementById("fileList");
+
+        window.selectedFiles=[];
+
+
+        dropArea.onclick = () => fileInput.click();
+
+        /* manual select */
+        fileInput.onchange = () => {
+            window.selectedFiles=[...fileInput.files];
+;
+            showFiles();
+        };
+
+        /* drag */
+        dropArea.addEventListener("dragover", e => {
+            e.preventDefault();
+            dropArea.classList.add("drag");
+        });
+        dropArea.addEventListener("dragleave", () => dropArea.classList.remove("drag"));
+
+        /* drop */
+        dropArea.addEventListener("drop", e => {
+            e.preventDefault();
+            dropArea.classList.remove("drag");
+            window.selectedFiles=[...e.dataTransfer.files];
+
+            showFiles();
+        });
+
+        function showFiles() {
+            fileList.innerHTML = "";
+            selectedFiles.forEach(f => {
+                fileList.innerHTML += `<div>📎 ${f.name}</div>`;
+            });
+        }
+    </script>
+<div id="loader">
+    <div class="spinner"></div>
+    <p>Processing your file...</p>
+</div>
+
+
+</body>
+
+</html>

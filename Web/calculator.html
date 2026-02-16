@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calculator - GujjuTools</title>
+    <link rel="icon" type="image/png" href="img/Comp_logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body{
+            background: linear-gradient(135deg,#eef2f7,#e6ebf3);
+        }
+
+        /* CALCULATOR */
+        .calc{
+            max-width:360px;
+            margin:100px auto;
+            padding:25px;
+            border-radius:20px;
+            background:rgba(255,255,255,.75);
+            backdrop-filter:blur(12px);
+            box-shadow:0 25px 60px rgba(0,0,0,.15);
+        }
+
+        .display{
+            width:100%;
+            height:80px;
+            font-size:34px;
+            border:none;
+            outline:none;
+            text-align:right;
+            padding:15px;
+            border-radius:14px;
+            margin-bottom:18px;
+            background:#f8fafc;
+            box-shadow:inset 0 3px 8px rgba(0,0,0,.08);
+        }
+
+        /* BUTTON GRID */
+        .buttons{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:12px;
+        }
+
+        .btn{
+            padding:20px;
+            font-size:20px;
+            border:none;
+            border-radius:14px;
+            cursor:pointer;
+            transition:.2s;
+            background:white;
+            color:#111;
+            font-weight:600;
+            box-shadow:0 6px 12px rgba(0,0,0,.08);
+        }
+
+        .btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0 10px 20px rgba(0,0,0,.15);
+        }
+
+        /* special buttons */
+        .op{
+            background:#ffecec;
+            color:#e5322d;
+            font-weight:bold;
+        }
+
+        .equal{
+            background:#e5322d;
+            color:white;
+            font-weight:bold;
+        }
+
+        .equal:hover{
+            background:#c72a26;
+        }
+
+        .clear{
+            background:#111;
+            color:white;
+        }
+    </style>
+</head>
+
+<body>
+
+<script src="navbar.js"></script>
+
+<div class="calc">
+    <input id="display" class="display" readonly>
+
+    <div class="buttons">
+        <button class="btn clear" onclick="clearDisplay()">C</button>
+        <button class="btn op" onclick="add('%')">%</button>
+        <button class="btn op" onclick="back()">⌫</button>
+        <button class="btn op" onclick="add('/')">÷</button>
+
+        <button class="btn" onclick="add('7')">7</button>
+        <button class="btn" onclick="add('8')">8</button>
+        <button class="btn" onclick="add('9')">9</button>
+        <button class="btn op" onclick="add('*')">×</button>
+
+        <button class="btn" onclick="add('4')">4</button>
+        <button class="btn" onclick="add('5')">5</button>
+        <button class="btn" onclick="add('6')">6</button>
+        <button class="btn op" onclick="add('-')">−</button>
+
+        <button class="btn" onclick="add('1')">1</button>
+        <button class="btn" onclick="add('2')">2</button>
+        <button class="btn" onclick="add('3')">3</button>
+        <button class="btn op" onclick="add('+')">+</button>
+
+        <button class="btn" onclick="add('0')">0</button>
+        <button class="btn" onclick="add('.')">.</button>
+        <button class="btn equal" onclick="calculate()" style="grid-column: span 2">=</button>
+    </div>
+</div>
+
+<script src="footer.js"></script>
+<script src="transition.js"></script>
+
+<script>
+const display=document.getElementById("display");
+
+function add(v){ display.value+=v; }
+function clearDisplay(){ display.value=""; }
+function back(){ display.value=display.value.slice(0,-1); }
+
+function calculate(){
+    try{ display.value=eval(display.value); }
+    catch{ display.value="Error"; }
+}
+
+document.addEventListener("keydown",e=>{
+    if("0123456789+-*/.%".includes(e.key)) add(e.key);
+    if(e.key==="Enter") calculate();
+    if(e.key==="Backspace") back();
+    if(e.key==="Escape") clearDisplay();
+});
+</script>
+
+</body>
+</html>
