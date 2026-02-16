@@ -1,0 +1,4 @@
+python -m http.server 5500
+python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+to start the python server
+http://127.0.0.1:5500
